@@ -1,80 +1,143 @@
-FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+Format: 1A
 
-# blueprint-testing
+# Polls
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Polls is a siomple _API_ for testing API Blueprint on [Apiary](http://apiary.io)
 
-## Questions Collection [/questions]
+# Group Questions
 
-### List All Questions [GET]
+Questions asked in the poll.
+
+## Questions [/questions/?max_count={mc}&year={year}]
+
++ Parameters
+
+    + mc: `100` (number, required) - Maximum number of questions to return
+    
+    + year: `2016` (number, optional) - Year when the question was asked
+
+### List all questions [GET]
+
+Get a list of all questions *ever* asked in the universe.
+
+And the answers to them!
 
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
+        {
+            "questions": [
+                {
+                    "id": 1,
+                    "q": "What is life?",
+                    "a": "We don't really know."
+                },
+                {
+                    "id": 2,
+                    "q": "What is the meaning of lifew?",
+                    "a": "42."
+                }
+            ]
+        }
+        
+### Create a question [POST]
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+Create a brand new question. You have to supply question and answer.
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "q": "Is a tomato a vegetable?",
+            "a": "No, it's a fruit."
         }
-
+        
 + Response 201 (application/json)
 
     + Headers
-
-            Location: /questions/2
-
+    
+            Location: /questions/3
+        
     + Body
-
+    
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "id": 3,
+                "q": "Is a tomato a vegetable?",
+                "a": "No, it's a fruit."
             }
+
+## Question [/questions/{id}]
+
+A single question.
+
++ Parameters
+    + id (number) - Question ID
+
+### Get full details of a question [GET]
+
++ Response 200 (application/json)
+
+        {
+            "q": "What is the capital of Germany?",
+            "a": "Berlin"
+        }
+        
+### Edit an existing question [PUT]
+
++ Request (application/json)
+
+        {
+            "q": "What is Germany's capital called?"
+        }
+        
++ Response 204
+
++ Request (application/json)
+
+        {
+            "a": "It is called Berlin"
+        }
+        
++ Response 204
+
++ Request (application/json)
+
+        {
+            "q": "What is Germany's capital called?",
+            "a": "It is called Berlin"
+        }
+        
++ Response 204
+        
+
+### Create a new question [POST]
+
++ Request (application/json)
+
+    + Headers
+    
+            X-Auth-Token: 56tfgh456fs78
+            Z-Tunnelling: 56
+            
+    + Body
+    
+            {
+                "q": "What is the capital of France?",
+                "a": "Paris"
+            }
+
++ Response 201 (application/json)
+ 
+    + Headers
+    
+            Location: /questions/5
+            
+    + Body
+   
+            {
+                "id": 5,
+                "q": "What is the capital of France?",
+                "a": "Paris"
+            }
+            
+### Delete a question [DELETE]
+
++ Response 204
